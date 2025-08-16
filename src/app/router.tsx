@@ -1,31 +1,34 @@
 import { useMemo } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { useQueryClient, type QueryClient } from '@tanstack/react-query';
 
 import { paths } from '@/config/paths';
 
 import { default as AppRoot } from './routes/app/root';
-import LandingRoute from './routes/landing';
-import Register from './routes/auth/register';
-import Login from './routes/auth/login';
-import Dashboard from './routes/app/dashboard';
-import Expenses from './routes/app/expenses';
-import Incomes from './routes/app/incomes';
-import Categories from './routes/app/categories';
-import Profile from './routes/app/profile';
 
-const createAppRouter = () =>
+const convert = (queryClient: QueryClient) => (m: any) => {
+  const { clientLoader, clientAction, default: Component, ...rest } = m;
+  return {
+    ...rest,
+    loader: clientLoader?.(queryClient),
+    action: clientAction?.(queryClient),
+    Component,
+  };
+};
+
+const createAppRouter = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
       path: paths.home.path,
-      element: <LandingRoute />,
+      lazy: () => import('./routes/landing').then(convert(queryClient)),
     },
     {
       path: paths.auth.register.path,
-      element: <Register />,
+      lazy: () => import('./routes/auth/register').then(convert(queryClient)),
     },
     {
       path: paths.auth.login.path,
-      element: <Login />,
+      lazy: () => import('./routes/auth/login').then(convert(queryClient)),
     },
     {
       path: paths.app.root.path,
@@ -33,30 +36,32 @@ const createAppRouter = () =>
       children: [
         {
           path: paths.app.dashboard.path,
-          element: <Dashboard />,
+          lazy: () => import('./routes/app/dashboard').then(convert(queryClient)),
         },
         {
           path: paths.app.expenses.path,
-          element: <Expenses />,
+          lazy: () => import('./routes/app/expenses').then(convert(queryClient)),
         },
         {
           path: paths.app.incomes.path,
-          element: <Incomes />,
+          lazy: () => import('./routes/app/incomes').then(convert(queryClient)),
         },
         {
           path: paths.app.categories.path,
-          element: <Categories />,
+          lazy: () => import('./routes/app/categories').then(convert(queryClient)),
         },
         {
           path: paths.app.profile.path,
-          element: <Profile />,
+          lazy: () => import('./routes/app/profile').then(convert(queryClient)),
         },
       ],
     },
   ]);
 
 export const AppRouter = () => {
-  const router = useMemo(() => createAppRouter(), []);
+  const queryClient = useQueryClient();
+
+  const router = useMemo(() => createAppRouter(queryClient), [queryClient]);
 
   return <RouterProvider router={router} />;
 };
