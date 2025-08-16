@@ -56,6 +56,10 @@ const createAppRouter = (queryClient: QueryClient) =>
         },
       ],
     },
+    {
+      path: '*',
+      lazy: () => import('./routes/not-found').then(convert(queryClient)),
+    },
   ]);
 
 export const AppRouter = () => {

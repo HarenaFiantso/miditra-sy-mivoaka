@@ -11,10 +11,7 @@ const makePath = (base: string, sub: string = ''): PathConfig<() => string> => {
   };
 };
 
-const makePathWithRedirect = (
-  base: string,
-  sub: string
-): PathConfig<(redirectTo?: string | null) => string> => {
+const makePathWithRedirect = (base: string, sub: string): PathConfig<(redirectTo?: string | null) => string> => {
   const fullPath = `${base}/${sub}`;
   return {
     path: fullPath,
