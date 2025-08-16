@@ -27,7 +27,7 @@ export const paths = {
   home: makePath('/'),
 
   auth: {
-    register: makePathWithRedirect('/auth', 'signup'),
+    register: makePathWithRedirect('/auth', 'register'),
     login: makePathWithRedirect('/auth', 'login'),
   },
 
