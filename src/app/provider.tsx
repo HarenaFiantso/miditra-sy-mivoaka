@@ -1,11 +1,21 @@
-import { Suspense, type ReactNode } from 'react';
+import { Suspense, useState, type ReactNode } from 'react';
 import { ClockLoader } from 'react-spinners';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { queryConfig } from '@/lib/react-query';
 
 type AppProviderProps = {
   children: ReactNode;
 };
 
 export const AppProvider = ({ children }: AppProviderProps) => {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: queryConfig,
+      })
+  );
+
   return (
     <Suspense
       fallback={
@@ -14,7 +24,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >
-      {children}
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </Suspense>
   );
 };
