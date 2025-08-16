@@ -1,69 +1,113 @@
-# React + TypeScript + Vite
+# Miditra & Mivoaka 💸
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![React](https://img.shields.io/badge/React-v19.1.1-blue?logo=react)](https://react.dev/)
+[![Nodejs](https://img.shields.io/badge/Node-v22.16.0-green?logo=nodedotjs)](https://react.dev/)
+[![Express](https://img.shields.io/badge/Express-v5.1.0-white?logo=express)](https://expo.dev/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-Currently, two official plugins are available:
+A full-stack web application that enables users to track personal expenses and income, upload receipts, set up recurring expenses with a defined duration, and receive alerts when they exceed their monthly budget.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> [!IMPORTANT]
+> Mivoaka & Miditra is under active development and not yet production-ready.
 
-## Expanding the ESLint configuration
+## **Core Functional Requirements**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Authentication:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Register**, **Login**, **Logout**
+- JWT-based authentication for secure access to private routes
+- Each user only has access to their own data
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Expense Management:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+- Users can **create**, **edit**, **delete**, and **list** expenses
+- Each expense includes:
+  - **Amount** (required)
+  - **Date** (required)
+  - **Category** (required)
+  - **Description** (optional)
+  - **Type**:
+    - `One-time` (default)
+    - `Recurring`
+  - **Receipt Upload** (optional)
+  - **Creation Date** (auto-generated)
+  - **Start Date** (for recurring only)
+  - **End Date** (optional; for recurring only)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Behaviors:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+- **Start Date** defines when a recurring expense should begin showing up in dashboards.
+- **End Date** defines when it should stop being included in monthly summaries.
+- If no end date is provided, the recurring expense is considered “ongoing”.
+- One-time expenses **ignore start/end dates** — they rely only on the expense date.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+### Category Management:
+
+- Default categories available on user creation
+- Users can:
+  - Create new custom categories
+  - Edit category names
+  - Delete categories (only if not in use)
+
+### Receipt Uploads:
+
+- Supported formats: JPG, PNG, PDF
+- Max file size: 5MB (customizable)
+- Users can view/download receipts attached to any expense
+- Uploads are optional and securely linked to individual expenses
+
+### Recurring Expenses:
+
+- Users can select “Recurring” as the expense type when creating or editing an expense
+- Recurring expenses have:
+  - **Start Date** (required)
+  - **End Date** (optional)
+- Recurrence logic:
+  - Recurring expenses are **virtualized** monthly in reports — no duplicate entries are created
+  - If the current month falls between the start and end dates, the expense is included in that month’s total
+- Users can convert an expense from `one-time` to `recurring`, and vice versa
+
+### Income Tracking:
+
+- Users can **add**, **edit**, **delete**, and **list** income entries
+- Each income includes:
+  - Amount
+  - Date
+  - Source
+  - Description (optional)
+  - Creation Date (auto-generated)
+- Income is shown in the monthly summaries and budget calculations
+
+### Dashboard & Monthly Summary:
+
+- Displays stats for the current or selected month:
+  - Total **income**
+  - Total **expenses** (including all recurring expenses active in that month)
+  - Remaining **balance** (Income − Expenses)
+- Visualizations:
+  - Pie chart for expense categories
+  - Bar chart for monthly spending over time
+- Filters:
+  - By custom date range
+  - By category or expense type
+
+### Budget Monitoring & Alerts:
+
+- If monthly **expenses exceed income**, show a **warning message**:
+  - "You’ve exceeded your budget for this month by $X"
+  - Visible in dashboard header or via toast
+- Triggered only when:
+  - Sum of active expenses (including recurring within date range) > sum of incomes
+
+### User Profile & Settings: (Optional)
+
+- View account info (email, creation date)
+- Change password
+- Enable dark mode toggle
+
+### Access Control & Security
+
+- All data is **user-scoped** (no cross-user access)
+- Auth tokens required for API access
+- Uploaded files are securely stored
+- Input validation and error handling for all user actions
