@@ -94,6 +94,23 @@ const register = async (req: Request<object, object, RegisterBody>, res: Respons
   }
 };
 
-const whoami = () => {};
+const whoami = async (req: Request, res: Response) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'No token provided' });
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; username: string; email: string };
+
+    res.status(200).json({ user: decoded });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      res.status(401).json({ error: `Invalid or expired token : ${error.message}` });
+    } else {
+      res.status(500).json({ error: 'Unknown error occured' });
+    }
+  }
+};
 
 export { login, register, whoami };

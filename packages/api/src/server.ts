@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/v1/health-check', healthCheckRoute);
-app.use('/api/v1/auth', authRoute);
+app.use('/api/v1', authRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
