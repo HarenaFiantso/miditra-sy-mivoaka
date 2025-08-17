@@ -1,0 +1,5 @@
+### Should return a json format that contains a message "Hello World"
+GET http://localhost:3000/api/v1/health-check/hello
+
+### Should return a json format that contains a message "Pong"
+GET http://localhost:3000/api/v1/health-check/ping
