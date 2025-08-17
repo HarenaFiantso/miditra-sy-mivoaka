@@ -1,0 +1,479 @@
+openapi: 3.0.3
+info:
+  version: latest
+  title: Mivoaka sy miditra
+  description: A full-stack web application that enables users to track personal expenses and income, upload receipts, set up recurring expenses with a defined duration, and receive alerts when they exceed their monthly budget.
+
+servers:
+  - url: http://localhost:3000/api/v1
+
+tags:
+  - name: Health
+    description: Endpoints to verify service health
+  - name: Security
+    description: Authentication and user management
+  - name: Expenses
+    description: Manage personal expenses
+  - name: Incomes
+    description: Manage personal incomes
+  - name: Categories
+    description: Manage expense and income categories
+  - name: Summary
+    description: Get monthly or custom summaries, alerts
+  - name: Receipts
+    description: Manage and download receipts
+  - name: User
+    description: Manage user profile
+
+paths:
+  /health-check/hello:
+    get:
+      tags: [Health]
+      summary: Should return Hello World.
+      operationId: hello_world
+      responses:
+        '200':
+          description: Return OK if API is healthy
+          content:
+            application/json:
+              example: { message: 'Hello World' }
+        '500':
+          $ref: '#/components/responses/500'
+
+  /health-check/ping:
+    get:
+      tags: [Health]
+      summary: Should return ping.
+      operationId: ping_pong
+      responses:
+        '200':
+          description: Return Pong if API is healthy
+          content:
+            application/json:
+              example: { message: 'Pong' }
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /auth/login:
+    post:
+      tags: [Security]
+      summary: Get JWT Token
+      operationId: getToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: JWT token response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400': { $ref: '#/components/responses/400' }
+        '500': { $ref: '#/components/responses/500' }
+
+  /auth/register:
+    post:
+      tags: [Security]
+      summary: Register user
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '201':
+          description: User created successfully
+        '400': { $ref: '#/components/responses/400' }
+        '500': { $ref: '#/components/responses/500' }
+
+  /whoami:
+    get:
+      tags: [Security]
+      summary: Who am I? Tells you who you are.
+      security:
+        - BearerAuth: []
+      operationId: whoami
+      responses:
+        '200':
+          description: Who you are
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Whoami'
+        '400':
+          $ref: '#/components/responses/400'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /expenses:
+    get:
+      tags: [Expenses]
+      summary: List all user expenses
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+        - $ref: '#/components/parameters/CategoryFilter'
+        - $ref: '#/components/parameters/ExpenseType'
+      responses:
+        '200':
+          description: List of expenses
+    post:
+      tags: [Expenses]
+      summary: Create a new expense
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExpenseCreate'
+      responses:
+        '201':
+          description: Expense created
+
+  /expenses/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Expenses]
+      summary: Get a single expense
+      responses:
+        '200':
+          description: Expense data
+    put:
+      tags: [Expenses]
+      summary: Update an expense
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExpenseUpdate'
+      responses:
+        '200':
+          description: Expense updated
+    delete:
+      tags: [Expenses]
+      summary: Delete an expense
+      responses:
+        '204':
+          description: Expense deleted
+
+  /incomes:
+    get:
+      tags: [Incomes]
+      summary: List all incomes
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: List of incomes
+    post:
+      tags: [Incomes]
+      summary: Create new income
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeCreate'
+      responses:
+        '201':
+          description: Income created
+
+  /incomes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Incomes]
+      summary: Get an income entry
+      responses:
+        '200':
+          description: Income data
+    put:
+      tags: [Incomes]
+      summary: Update an income entry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeUpdate'
+      responses:
+        '200':
+          description: Income updated
+    delete:
+      tags: [Incomes]
+      summary: Delete an income entry
+      responses:
+        '204':
+          description: Income deleted
+
+  /categories:
+    get:
+      tags: [Categories]
+      summary: List user categories
+      responses:
+        '200':
+          description: List of categories
+    post:
+      tags: [Categories]
+      summary: Create new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+      responses:
+        '201':
+          description: Category created
+
+  /categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Categories]
+      summary: Rename a category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdate'
+      responses:
+        '200':
+          description: Category updated
+    delete:
+      tags: [Categories]
+      summary: Delete a category
+      responses:
+        '204':
+          description: Category deleted
+
+  /summary/monthly:
+    get:
+      tags: [Summary]
+      summary: Get current month summary
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Monthly summary
+
+  /summary:
+    get:
+      tags: [Summary]
+      summary: Get summary for custom range
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: Summary
+
+  /summary/alerts:
+    get:
+      tags: [Summary]
+      summary: Budget overrun alert
+      responses:
+        '200':
+          description: Alert info
+
+  /receipts/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Receipts]
+      summary: Download/view receipt
+      responses:
+        '200':
+          description: Receipt file
+
+  /user/profile:
+    get:
+      tags: [User]
+      summary: Get user profile
+      responses:
+        '200':
+          description: Profile info
+
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      description: Resource identifier
+      required: true
+      schema:
+        type: string
+    StartDate:
+      in: query
+      name: start
+      schema:
+        type: string
+      description: Start date
+    EndDate:
+      in: query
+      name: end
+      schema:
+        type: string
+      description: End date
+    CategoryFilter:
+      in: query
+      name: category
+      schema:
+        type: string
+      description: Filter by category
+    ExpenseType:
+      in: query
+      name: type
+      schema:
+        type: string
+        enum: [recurring, one-time]
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestException'
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotAuthorizedException'
+    '404':
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceNotFoundException'
+    '429':
+      description: Too many requests to the API
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TooManyRequestsException'
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerException'
+
+  schemas:
+    Login:
+      type: object
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    Register:
+      type: object
+      properties:
+        username: { type: string }
+        email: { type: string }
+        password: { type: string }
+
+    Whoami:
+      properties:
+        id:
+          type: string
+        bearer:
+          type: string
+
+    ExpenseCreate:
+      type: object
+      required: [amount, date, categoryId]
+      properties:
+        amount: { type: number }
+        date: { type: string }
+        categoryId: { type: string }
+        description: { type: string }
+        type:
+          type: string
+          enum: [one-time, recurring]
+        startDate: { type: string }
+        endDate: { type: string }
+        receipt:
+          type: string
+          format: binary
+
+    ExpenseUpdate:
+      allOf:
+        - $ref: '#/components/schemas/ExpenseCreate'
+
+    IncomeCreate:
+      type: object
+      required: [amount, date]
+      properties:
+        amount: { type: number }
+        date: { type: string }
+        source: { type: string }
+        description: { type: string }
+
+    IncomeUpdate:
+      allOf:
+        - $ref: '#/components/schemas/IncomeCreate'
+
+    CategoryCreate:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+
+    CategoryUpdate:
+      allOf:
+        - $ref: '#/components/schemas/CategoryCreate'
+
+    Exception:
+      type: object
+      properties:
+        type: { type: string }
+        message: { type: string }
+
+    BadRequestException:
+      allOf: [{ $ref: '#/components/schemas/Exception' }]
+      example: { type: BadRequestException, message: Bad request }
+
+    NotAuthorizedException:
+      allOf: [{ $ref: '#/components/schemas/Exception' }]
+      example: { type: NotAuthorizedException, message: Not authorized }
+
+    ResourceNotFoundException:
+      allOf: [{ $ref: '#/components/schemas/Exception' }]
+      example: { type: ResourceNotFoundException, message: Resource not found }
+
+    TooManyRequestsException:
+      allOf: [{ $ref: '#/components/schemas/Exception' }]
+      example: { type: TooManyRequestsException, message: Too many requests }
+
+    InternalServerException:
+      allOf: [{ $ref: '#/components/schemas/Exception' }]
+      example: { type: InternalServerException, message: Unexpected error }
