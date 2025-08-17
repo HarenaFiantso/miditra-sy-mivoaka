@@ -9,6 +9,15 @@
   "workspaces": [
     "packages/*"
   ],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --check"
+    ],
+    "*.{json,yml,yaml,md}": [
+      "prettier --check"
+    ]
+  },
   "scripts": {
     "dev": "concurrently \"npm:dev:client\" \"npm:dev:server\"",
     "dev:client": "npm run dev --workspace=@expense-tracker/client",
@@ -22,6 +31,7 @@
   "devDependencies": {
     "concurrently": "^9.2.0",
     "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
     "typescript": "~5.8.3"
   }
