@@ -6,9 +6,9 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "target": "ES2023",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["**/*.ts"],
