@@ -4,8 +4,8 @@ import { useQueryClient, type QueryClient } from '@tanstack/react-query';
 
 import { paths } from '@/config/paths';
 
-import { default as AppRoot } from './routes/app/root';
-import AuthLayout from '@/components/layouts/auth-layout';
+import { default as AppRoot, ErrorBoundary as AppErrorBoundary } from './routes/app/root';
+import { AuthLayout } from '@/components/layouts';
 
 const convert = (queryClient: QueryClient) => (m: any) => {
   const { clientLoader, clientAction, default: Component, ...rest } = m;
@@ -26,6 +26,7 @@ const createAppRouter = (queryClient: QueryClient) =>
     {
       path: paths.auth.root.path,
       element: <AuthLayout />,
+      ErrorBoundary: AppErrorBoundary,
       children: [
         {
           path: paths.auth.register.path,
