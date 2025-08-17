@@ -1,5 +1,4 @@
-import { Header, Hero } from '@/components/common';
-import { PlasmaWave, CircularText } from '@/components/shared';
+import { PlasmaWave, CircularText, Header, Hero } from '@/components/shared';
 
 export default function LandingRoute() {
   return (
