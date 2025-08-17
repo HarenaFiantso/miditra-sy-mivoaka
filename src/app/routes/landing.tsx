@@ -7,7 +7,7 @@ export default function LandingRoute() {
       <Header />
       <PlasmaWave yOffset={-300} xOffset={100} rotationDeg={-30} />
       <Hero />
-      <div className='absolute bottom-5 right-10'>
+      <div className="absolute right-10 bottom-5">
         <CircularText text="EXPENSES*TRACKER*" onHover="speedUp" spinDuration={20} className="text-white" />
       </div>
     </section>

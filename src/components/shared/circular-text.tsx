@@ -109,7 +109,7 @@ export default function CircularText({
         return (
           <span
             key={i}
-            className="absolute inset-0 inline-block text-md transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
+            className="text-md absolute inset-0 inline-block transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
             style={{ transform, WebkitTransform: transform }}
           >
             {letter}

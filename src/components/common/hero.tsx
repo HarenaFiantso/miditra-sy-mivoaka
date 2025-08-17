@@ -25,10 +25,7 @@ export default function Hero() {
             ease="elastic.out(0.5, 0.3)"
           />
         </h1>
-        <Link
-          to={'/auth/login'}
-          className="cta-button"
-        >
+        <Link to={'/auth/login'} className="cta-button">
           <span>Get started</span>
           <ArrowRight />
         </Link>
