@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PathConfig<T extends (...args: any[]) => string> = {
   path: string;
   getHref: T;

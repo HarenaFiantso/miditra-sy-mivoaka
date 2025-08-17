@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router';
+import { useMemo, type ComponentType } from 'react';
+import { createBrowserRouter, RouterProvider, type ActionFunction, type LoaderFunction } from 'react-router';
 import { useQueryClient, type QueryClient } from '@tanstack/react-query';
 
 import { paths } from '@/config/paths';
@@ -7,15 +7,30 @@ import { paths } from '@/config/paths';
 import { default as AppRoot, ErrorBoundary as AppErrorBoundary } from './routes/app/root';
 import { AuthLayout } from '@/components/layouts';
 
-const convert = (queryClient: QueryClient) => (m: any) => {
-  const { clientLoader, clientAction, default: Component, ...rest } = m;
-  return {
-    ...rest,
-    loader: clientLoader?.(queryClient),
-    action: clientAction?.(queryClient),
-    Component,
-  };
+type ModuleWithClient<TProps = unknown> = {
+  default: ComponentType<TProps>;
+  clientLoader?: (queryClient: QueryClient) => LoaderFunction;
+  clientAction?: (queryClient: QueryClient) => ActionFunction;
+  [key: string]: unknown;
 };
+
+type ConvertedRoute<TProps = unknown> = {
+  Component: ComponentType<TProps>;
+  loader?: LoaderFunction;
+  action?: ActionFunction;
+} & Record<string, unknown>;
+
+const convert =
+  (queryClient: QueryClient) =>
+  <TProps = unknown,>(m: ModuleWithClient<TProps>): ConvertedRoute<TProps> => {
+    const { clientLoader, clientAction, default: Component, ...rest } = m;
+    return {
+      ...rest,
+      loader: clientLoader?.(queryClient),
+      action: clientAction?.(queryClient),
+      Component,
+    };
+  };
 
 const createAppRouter = (queryClient: QueryClient) =>
   createBrowserRouter([

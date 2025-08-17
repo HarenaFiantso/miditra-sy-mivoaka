@@ -292,7 +292,7 @@ export default function PlasmaWave({
       ro.disconnect();
       renderer.gl.canvas.remove();
     };
-  }, [isMobile, isVisible]);
+  }, [isMobile, isVisible, bend1, bend2, dir2, focalLength, speed1, speed2]);
 
   if (isMobile) return null;
 
