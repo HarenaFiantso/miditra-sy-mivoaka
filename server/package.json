@@ -2,11 +2,12 @@
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Fiantso Harena",
   "license": "ISC",
   "description": "",
   "dependencies": {
