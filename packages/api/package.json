@@ -1,17 +1,12 @@
 {
-  "name": "server",
+  "name": "@expense-tracker/api",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "dev": "tsx --watch --env-file .env src/server.ts",
     "start": "node --env-file .env dist/src/server.js",
-    "build": "tsc",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Fiantso Harena",
