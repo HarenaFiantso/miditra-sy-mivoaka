@@ -4,12 +4,14 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx --watch src/server.ts",
-    "start": "node dist/src/server.js",
+    "dev": "tsx --watch --env-file .env src/server.ts",
+    "start": "node --env-file .env dist/src/server.js",
     "build": "tsc",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "Fiantso Harena",
@@ -19,10 +21,14 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-perfectionist": "^4.15.0",
     "tsx": "^4.20.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.1"
   }
 }
