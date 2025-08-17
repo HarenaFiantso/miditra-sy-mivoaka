@@ -38,7 +38,7 @@ const login = async (req: Request<object, object, LoginBody>, res: Response) => 
       return;
     }
 
-    const token = jwt.sign({ userId: user.id, username: user.username, email: user.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, JWT_SECRET, {
       expiresIn: '1h',
     });
 
@@ -100,7 +100,7 @@ const whoami = async (req: Request, res: Response) => {
     if (!authHeader) return res.status(401).json({ error: 'No token provided' });
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; username: string; email: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; username: string; email: string };
 
     res.status(200).json({ user: decoded });
   } catch (error: unknown) {
