@@ -1,21 +1,36 @@
 import { useState, type FormEvent } from 'react';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
-import { Link } from 'react-router';
+import { paths } from '@/config/paths';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', { email, password });
+    try {
+      await login(email, password);
+      navigate(paths.app.dashboard.path);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+        setError(error.message || 'Login failed');
+      }
+    }
   };
 
   return (
@@ -69,6 +84,7 @@ export default function LoginForm() {
               Login
             </Button>
           </div>
+          {error && <p className="text-center text-red-500">{error}</p>}
         </form>
         <div className="relative z-10 mt-6 flex justify-center" style={{ animationDelay: '0.3s' }}>
           <Link

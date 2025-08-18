@@ -6,6 +6,7 @@ import { paths } from '@/config/paths';
 
 import { default as AppRoot, ErrorBoundary as AppErrorBoundary } from './routes/app/root';
 import { AuthLayout } from '@/components/layouts';
+import { ProtectedRoute } from '@/components/auth';
 
 type ModuleWithClient<TProps = unknown> = {
   default: ComponentType<TProps>;
@@ -55,7 +56,11 @@ const createAppRouter = (queryClient: QueryClient) =>
     },
     {
       path: paths.app.root.path,
-      element: <AppRoot />,
+      element: (
+        <ProtectedRoute>
+          <AppRoot />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: paths.app.dashboard.path,

@@ -3,6 +3,7 @@ import { ClockLoader } from 'react-spinners';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { queryConfig } from '@/lib/react-query';
+import { AuthProvider } from './providers/auth-context';
 
 type AppProviderProps = {
   children: ReactNode;
@@ -24,7 +25,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>{children}</AuthProvider>
+      </QueryClientProvider>
     </Suspense>
   );
 };
