@@ -216,7 +216,8 @@ export default function Expenses() {
         <CardContent>
           {filteredExpenses.length === 0 ? (
             <div className="py-8 text-center">
-              <p className="text-muted-foreground">No expenses found</p>
+              <h1 className="text-[6rem] text-white">(；一_一)</h1>
+              <p className="text-lg text-white">No expenses found</p>
             </div>
           ) : (
             <div className="space-y-4">

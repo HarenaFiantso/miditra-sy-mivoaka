@@ -2,7 +2,7 @@ import { PlasmaWave, CircularText, Header, Hero } from '@/components/shared';
 
 export default function LandingRoute() {
   return (
-    <section className="relative h-screen overflow-hidden bg-[#060010]">
+    <section className="relative h-screen overflow-hidden bg-gradient-to-br from-[#060010] via-[#1a0033] to-[#0a0011]">
       <Header />
       <PlasmaWave yOffset={-300} xOffset={100} rotationDeg={-30} />
       <Hero />
