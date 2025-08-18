@@ -1,9 +1,11 @@
 import { SplitText } from '@/components/shared';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import { useAuth } from '@/hooks/use-auth';
 import { CreditCard, DollarSign, Plus, TrendingUp } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const monthlyData = {
     income: 4500,
     expenses: 4200,
@@ -26,13 +28,30 @@ export default function Dashboard() {
     { month: 'Aug', income: 4900, expenses: 3500 },
   ];
 
+  const recentExpenses = [
+    { id: 1, description: 'University books (Amazon)', amount: 120, category: 'Studies', date: '2025-06-10' },
+    { id: 2, description: 'Romantic dinner', amount: 95, category: 'Girlfriend', date: '2025-06-20' },
+    { id: 3, description: 'School supplies (office)', amount: 55, category: 'Studies', date: '2025-07-02' },
+    { id: 4, description: 'Birthday gift (perfume)', amount: 75, category: 'Girlfriend', date: '2025-07-10' },
+    {
+      id: 5,
+      description: 'Bouquet + chocolates (make-up gift)',
+      amount: 50,
+      category: 'Girlfriend',
+      date: '2025-07-25',
+    },
+    { id: 6, description: 'Weekend at the beach (hotel)', amount: 220, category: 'Girlfriend', date: '2025-08-10' },
+    { id: 7, description: 'Pens + notebooks', amount: 22, category: 'Studies', date: '2025-08-12' },
+    { id: 8, description: 'Personalized bracelet', amount: 65, category: 'Girlfriend', date: '2025-08-14' },
+  ];
+
   return (
-    <div className="h-screen w-[1536px] py-10">
+    <div className="h-full w-[1536px] py-10">
       <div className="flex justify-between gap-4 space-y-10">
         <div>
           <h2 className="relative z-10 mb-4 max-w-[22ch] text-[3rem] leading-none font-medium tracking-[-3px] whitespace-nowrap text-white select-none [text-shadow:0_0_2px_rgba(255,255,255,0.1),0_0_4px_rgba(255,255,255,0.3),0_0_8px_rgba(255,255,255,0.4),0_0_136px_rgba(120,60,255,0.8)]">
             <SplitText
-              text="Dashboard"
+              text={`Welcome back, ${user?.user.username}`}
               className="hero-split"
               splitType="chars"
               delay={30}
@@ -134,6 +153,39 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+      <Card className="mt-10 border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="space-y-2">
+            <CardTitle className="text-xl text-white">Recent Expenses</CardTitle>
+            <CardDescription>Your latest transactions</CardDescription>
+          </div>
+          <Button variant="default" className="cta-button gap-2 rounded-full px-8 py-3">
+            See more
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentExpenses.map((expense) => (
+              <div key={expense.id} className="flex items-center justify-between py-2">
+                <div className="flex-1">
+                  <p className="text-lg font-medium text-white">{expense.description}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {expense.category}
+                    </Badge>
+                    <span className="text-muted-foreground text-xs">
+                      {new Date(expense.date).toLocaleDateString('fr-FR')}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-white">-{expense.amount}€</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
