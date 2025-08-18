@@ -1,3 +1,4 @@
+import { LoadingPage } from '@/components/shared';
 import { whoami, login as loginApi } from '@/lib/auth';
 import type { User } from '@/types/api';
 import React, { createContext, useEffect, useState } from 'react';
@@ -16,14 +17,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      whoami()
-        .then((data) => setUser(data))
-        .catch(() => localStorage.removeItem('token'))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+
+    const loadUser = async () => {
+      if (token) {
+        try {
+          const data = await whoami();
+          setUser(data);
+        } catch {
+          localStorage.removeItem('token');
+        }
+      }
+      setTimeout(() => setLoading(false), 1000);
+    };
+
+    loadUser();
   }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
@@ -38,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingPage />;
 
   return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 };

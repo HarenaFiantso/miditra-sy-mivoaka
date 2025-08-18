@@ -5,7 +5,7 @@ export default function Dashboard() {
   const { logout, user } = useAuth();
   return (
     <div className="flex flex-col space-y-10">
-      <h1 className="text-5xl text-white">Welcome {user?.id}</h1>
+      <h1 className="text-5xl text-white">Welcome {user?.user.username}</h1>
       <Button
         type="submit"
         variant="default"
@@ -13,7 +13,7 @@ export default function Dashboard() {
         size="lg"
         className="cta-button w-full rounded-full p-8 text-lg font-semibold"
       >
-        Login
+        Logout
       </Button>
     </div>
   );
