@@ -46,7 +46,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="h-full w-[1536px] py-10">
+    <div className="min-h-screen w-[1536px] py-10">
       <div className="flex justify-between gap-4 space-y-10">
         <div>
           <h2 className="relative z-10 mb-4 max-w-[22ch] text-[3rem] leading-none font-medium tracking-[-3px] whitespace-nowrap text-white select-none [text-shadow:0_0_2px_rgba(255,255,255,0.1),0_0_4px_rgba(255,255,255,0.3),0_0_8px_rgba(255,255,255,0.4),0_0_136px_rgba(120,60,255,0.8)]">
