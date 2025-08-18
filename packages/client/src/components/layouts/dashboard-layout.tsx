@@ -35,7 +35,7 @@ const links = [
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="relative flex h-full w-full flex-col items-center justify-center gap-5 bg-[#060010]">
+    <main className="relative flex h-full w-full flex-col items-center justify-center gap-5 bg-gradient-to-br from-[#060010] via-[#1a0033] to-[#0a0011]">
       {children}
       <FloatingDock items={links} />
     </main>

@@ -32,7 +32,7 @@ function RightPanelDescription() {
 
 export default function AuthLayout() {
   return (
-    <main className="flex min-h-screen bg-[#060010]">
+    <main className="flex min-h-screen bg-gradient-to-br from-[#060010] via-[#1a0033] to-[#0a0011]">
       <Outlet />
       <article className="relative hidden flex-1 lg:flex">
         <RightPanelDescription />

@@ -69,7 +69,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <Card className="border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-muted-foreground text-sm font-medium">Income this month</CardTitle>
             <TrendingUp className="text-accent h-4 w-4" />
@@ -79,7 +79,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground text-xs">+5.2% compared to last month</p>
           </CardContent>
         </Card>
-        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <Card className="border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-muted-foreground text-sm font-medium">Expenses this month</CardTitle>
             <CreditCard className="h-4 w-4 text-[#7c3aed]" />
@@ -89,7 +89,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground text-xs">+2.1% compared to last month</p>
           </CardContent>
         </Card>
-        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <Card className="border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-muted-foreground text-sm font-medium">Available balance</CardTitle>
             <DollarSign className={`h-4 w-4 ${monthlyData.balance >= 0 ? 'text-accent' : 'text-destructive'}`} />
@@ -104,7 +104,7 @@ export default function Dashboard() {
         </Card>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-6">
-        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <Card className="border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
           <CardHeader>
             <CardTitle className="text-xl text-white">Breakdown by category</CardTitle>
             <CardDescription>Your expenses this month by category</CardDescription>
@@ -132,7 +132,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+        <Card className="border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
           <CardHeader>
             <CardTitle className="text-xl text-white">Monthly trend</CardTitle>
             <CardDescription>Income vs expenses comparison</CardDescription>
@@ -153,7 +153,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-      <Card className="mt-10 border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+      <Card className="mt-10 border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="space-y-2">
             <CardTitle className="text-xl text-white">Recent Expenses</CardTitle>
