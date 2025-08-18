@@ -1,6 +1,7 @@
 import { SplitText } from '@/components/shared';
-import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { CreditCard, DollarSign, Plus, TrendingUp } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 export default function Dashboard() {
   const monthlyData = {
@@ -8,6 +9,22 @@ export default function Dashboard() {
     expenses: 4200,
     balance: 300,
   };
+
+  const categoryData = [
+    { name: 'Food', value: 800, color: '#7c3aed' },
+    { name: 'Girlfriend', value: 50, color: '#fff' },
+  ];
+
+  const monthlyTrend = [
+    { month: 'Jan', income: 3800, expenses: 2700 },
+    { month: 'Feb', income: 4500, expenses: 3200 },
+    { month: 'Mar', income: 3900, expenses: 3600 },
+    { month: 'Apr', income: 5000, expenses: 4300 },
+    { month: 'May', income: 4700, expenses: 3800 },
+    { month: 'Jun', income: 4200, expenses: 4100 },
+    { month: 'Jul', income: 5100, expenses: 4700 },
+    { month: 'Aug', income: 4900, expenses: 3500 },
+  ];
 
   return (
     <div className="h-screen w-[1536px] py-10">
@@ -64,6 +81,56 @@ export default function Dashboard() {
               {monthlyData.balance.toLocaleString()}€
             </div>
             <p className="text-muted-foreground text-xs">Income - Expenses</p>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mt-10 grid grid-cols-2 gap-6">
+        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+          <CardHeader>
+            <CardTitle className="text-xl text-white">Breakdown by category</CardTitle>
+            <CardDescription>Your expenses this month by category</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={categoryData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="value"
+                    stroke="transparent"
+                    label={({ name, percent }) => `${name} ${percent ? (percent * 100).toFixed(0) : 0}%`}
+                  >
+                    {categoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => `${value}€`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-r border-white/10 bg-gradient-to-br from-[#0f131a] to-[#181d25]">
+          <CardHeader>
+            <CardTitle className="text-xl text-white">Monthly trend</CardTitle>
+            <CardDescription>Income vs expenses comparison</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyTrend}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => `${value}€`} />
+                  <Legend />
+                  <Bar dataKey="income" fill="#fff" name="Income" />
+                  <Bar dataKey="expenses" fill="#7c3aed" name="Expenses" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
