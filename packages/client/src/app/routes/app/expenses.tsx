@@ -193,7 +193,6 @@ export default function Expenses() {
           </div>
         </CardContent>
       </Card>
-
       <Card className="mt-10 border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
         <CardContent>
           <div className="flex items-center justify-between">
@@ -207,7 +206,6 @@ export default function Expenses() {
           </div>
         </CardContent>
       </Card>
-
       <Card className="mt-10 border border-white/10 bg-gradient-to-br from-[#0f131a] via-[#151a22] to-[#1e2530] shadow-lg shadow-black/30">
         <CardHeader>
           <CardTitle className="text-xl text-white">Expenses List</CardTitle>
