@@ -15,9 +15,9 @@
     "sourceMap": true,
     "experimentalDecorators": false,
     "paths": {
-			"@modules/*": ["./src/modules/*"],
-			"@shared/*": ["./src/shared/*"]
-		}
+      "@modules/*": ["./src/modules/*"],
+      "@shared/*": ["./src/shared/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
