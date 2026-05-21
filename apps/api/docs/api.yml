@@ -1,0 +1,793 @@
+openapi: 3.0.0
+
+info:
+  title: Miditra sy Mivoaka API
+  description: REST API for managing personal expenses, incomes, receipts, and categories.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Authentication and session management
+  - name: Expenses
+    description: Expense CRUD and filtering
+  - name: Incomes
+    description: Income CRUD and filtering
+  - name: Categories
+    description: User-defined expense categories
+  - name: Summary
+    description: Financial summaries and budget alerts
+  - name: Receipts
+    description: Receipt file access
+  - name: User
+    description: User profile management
+
+paths:
+  /auth/signup:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Email already in use
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and receive a JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT access token
+        '401':
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      responses:
+        '200':
+          description: Authenticated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout current session
+      responses:
+        '204':
+          description: Logged out successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /expenses:
+    get:
+      tags: [Expenses]
+      summary: List expenses
+      description: Returns all expenses for the authenticated user, with optional filters.
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category ID
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/ExpenseType'
+          description: Filter by expense type
+      responses:
+        '200':
+          description: List of expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Expenses]
+      summary: Create an expense
+      description: Creates a new expense. Accepts an optional receipt file upload.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExpenseWrite'
+      responses:
+        '201':
+          description: Expense created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /expenses/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Expenses]
+      summary: Get an expense
+      responses:
+        '200':
+          description: Expense found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Expenses]
+      summary: Update an expense
+      description: Updates an existing expense. All fields are optional; only provided fields are updated.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExpenseUpdate'
+      responses:
+        '200':
+          description: Expense updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Expenses]
+      summary: Delete an expense
+      responses:
+        '204':
+          description: Expense deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /incomes:
+    get:
+      tags: [Incomes]
+      summary: List incomes
+      description: Returns all income entries for the authenticated user.
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: List of incomes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Incomes]
+      summary: Create an income entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeWrite'
+      responses:
+        '201':
+          description: Income created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /incomes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Incomes]
+      summary: Get an income entry
+      responses:
+        '200':
+          description: Income found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Incomes]
+      summary: Update an income entry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeUpdate'
+      responses:
+        '200':
+          description: Income updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Incomes]
+      summary: Delete an income entry
+      responses:
+        '204':
+          description: Income deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /categories:
+    get:
+      tags: [Categories]
+      summary: List categories
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryWrite'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    put:
+      tags: [Categories]
+      summary: Rename a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryWrite'
+      responses:
+        '200':
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Categories]
+      summary: Delete a category
+      responses:
+        '204':
+          description: Category deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /summary/monthly:
+    get:
+      tags: [Summary]
+      summary: Get monthly summary
+      description: Returns a financial summary for the given month. Defaults to the current month.
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}$"
+            example: '2025-08'
+          description: Target month in `YYYY-MM` format
+      responses:
+        '200':
+          description: Monthly summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /summary:
+    get:
+      tags: [Summary]
+      summary: Get summary for a date range
+      parameters:
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: Summary for date range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /summary/alerts:
+    get:
+      tags: [Summary]
+      summary: Get budget overrun alerts
+      responses:
+        '200':
+          description: Budget alert info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /receipts/{id}:
+    get:
+      tags: [Receipts]
+      summary: Download a receipt
+      description: Returns the receipt file associated with an expense.
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: Receipt file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /user/profile:
+    get:
+      tags: [User]
+      summary: Get user profile
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      tags: [User]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /user/profile/password:
+    patch:
+      tags: [User]
+      summary: Update password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordUpdate'
+      responses:
+        '200':
+          description: Password updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Resource identifier
+
+    StartDate:
+      name: start
+      in: query
+      schema:
+        type: string
+        format: date
+        example: '2025-01-01'
+      description: Start date (ISO 8601)
+
+    EndDate:
+      name: end
+      in: query
+      schema:
+        type: string
+        format: date
+        example: '2025-12-31'
+      description: End date (ISO 8601)
+
+  responses:
+    BadRequest:
+      description: Invalid request payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    ExpenseType:
+      type: string
+      enum: [one-time, recurring]
+      description: Whether the expense is a one-time or recurring transaction
+
+    AuthCredentials:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    PublicUser:
+      type: object
+      required: [user_id, email, created_at]
+      properties:
+        user_id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+          nullable: true
+        firstname:
+          type: string
+          nullable: true
+        lastname:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    ProfileUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[A-Za-z0-9_-]{3,50}$'
+        firstname:
+          type: string
+          maxLength: 100
+        lastname:
+          type: string
+          maxLength: 100
+
+    PasswordUpdate:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
+          minLength: 8
+
+    Category:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+
+    CategoryWrite:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+
+    ExpenseBase:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+        date:
+          type: string
+          format: date
+        categoryId:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/ExpenseType'
+        startDate:
+          type: string
+          format: date
+          description: Required when type is `recurring`
+        endDate:
+          type: string
+          format: date
+          description: Optional end date for recurring expenses
+
+    ExpenseWrite:
+      allOf:
+        - $ref: '#/components/schemas/ExpenseBase'
+        - type: object
+          required: [amount, date, categoryId]
+          properties:
+            receipt:
+              type: string
+              format: binary
+              description: Optional receipt file
+
+    ExpenseUpdate:
+      allOf:
+        - $ref: '#/components/schemas/ExpenseBase'
+        - type: object
+          properties:
+            receipt:
+              type: string
+              format: binary
+              description: Replacement receipt file
+
+    Expense:
+      allOf:
+        - type: object
+          required: [id, createdAt]
+          properties:
+            id:
+              type: string
+              readOnly: true
+            receiptId:
+              type: string
+              nullable: true
+              description: ID of the associated receipt, if any
+            createdAt:
+              type: string
+              format: date-time
+              readOnly: true
+        - $ref: '#/components/schemas/ExpenseBase'
+
+    IncomeBase:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+        date:
+          type: string
+          format: date
+        source:
+          type: string
+          description: Income source (e.g. salary, freelance)
+        description:
+          type: string
+
+    IncomeWrite:
+      allOf:
+        - $ref: '#/components/schemas/IncomeBase'
+        - type: object
+          required: [amount, date]
+
+    IncomeUpdate:
+      $ref: '#/components/schemas/IncomeBase'
+
+    Income:
+      allOf:
+        - type: object
+          required: [id, createdAt]
+          properties:
+            id:
+              type: string
+              readOnly: true
+            createdAt:
+              type: string
+              format: date-time
+              readOnly: true
+        - $ref: '#/components/schemas/IncomeBase'
+
+    Summary:
+      type: object
+      properties:
+        totalExpenses:
+          type: number
+          format: float
+        totalIncome:
+          type: number
+          format: float
+        balance:
+          type: number
+          format: float
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+
+    Alert:
+      type: object
+      properties:
+        overBudget:
+          type: boolean
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+              categoryName:
+                type: string
+              spent:
+                type: number
+                format: float
+              budget:
+                type: number
+                format: float
+
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
