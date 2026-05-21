@@ -1,3 +1,4 @@
+import { env } from '@shared/infra/config/env';
 import { createApp } from '@shared/infra/http/app';
 import http from 'node:http';
 
@@ -5,15 +6,11 @@ async function bootstrap(): Promise<void> {
   const httpServer = http.createServer();
   const app = createApp();
 
-  const PORT = 3000;
-  const NODE_ENV = 'development';
-  const API_VERSION = 'v1';
-
   httpServer.on('request', app);
 
-  httpServer.listen(PORT, () => {
-    console.log(`Miditra sy Mivoaka API running on port ${PORT} [${NODE_ENV}]`);
-    console.log(`http://localhost:${PORT}/api/${API_VERSION}/health`);
+  httpServer.listen(env.PORT, () => {
+    console.log(`Miditra sy Mivoaka API running on port ${env.PORT} [${env.NODE_ENV}]`);
+    console.log(`http://localhost:${env.PORT}/api/${env.API_VERSION}/health`);
   });
 
   const shutdown = async (signal: string) => {
