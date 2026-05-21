@@ -7,6 +7,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(3000),
   API_VERSION: z.string().default('v1'),
+
+  LOG_LEVEL: z.enum(["error", "warn", "info", "http", "debug"]).default("info"),
 });
 
 const parsed = envSchema.safeParse(process.env);
