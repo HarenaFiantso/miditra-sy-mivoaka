@@ -1,113 +1,159 @@
-# Miditra & Mivoaka 💸
+# Turborepo starter
 
-[![React](https://img.shields.io/badge/React-v19.1.1-blue?logo=react)](https://react.dev/)
-[![Nodejs](https://img.shields.io/badge/Node-v22.16.0-green?logo=nodedotjs)](https://react.dev/)
-[![Express](https://img.shields.io/badge/Express-v5.1.0-white?logo=express)](https://expo.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+This Turborepo starter is maintained by the Turborepo core team.
 
-A full-stack web application that enables users to track personal expenses and income, upload receipts, set up recurring expenses with a defined duration, and receive alerts when they exceed their monthly budget.
+## Using this example
 
-> [!IMPORTANT]
-> Mivoaka & Miditra is under active development and not yet production-ready.
+Run the following command:
 
-## **Core Functional Requirements**
+```sh
+npx create-turbo@latest
+```
 
-### Authentication:
+## What's inside?
 
-- **Register**, **Login**, **Logout**
-- JWT-based authentication for secure access to private routes
-- Each user only has access to their own data
+This Turborepo includes the following packages/apps:
 
-### Expense Management:
+### Apps and Packages
 
-- Users can **create**, **edit**, **delete**, and **list** expenses
-- Each expense includes:
-  - **Amount** (required)
-  - **Date** (required)
-  - **Category** (required)
-  - **Description** (optional)
-  - **Type**:
-    - `One-time` (default)
-    - `Recurring`
-  - **Receipt Upload** (optional)
-  - **Creation Date** (auto-generated)
-  - **Start Date** (for recurring only)
-  - **End Date** (optional; for recurring only)
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-### Behaviors:
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-- **Start Date** defines when a recurring expense should begin showing up in dashboards.
-- **End Date** defines when it should stop being included in monthly summaries.
-- If no end date is provided, the recurring expense is considered “ongoing”.
-- One-time expenses **ignore start/end dates** — they rely only on the expense date.
+### Utilities
 
-### Category Management:
+This Turborepo has some additional tools already setup for you:
 
-- Default categories available on user creation
-- Users can:
-  - Create new custom categories
-  - Edit category names
-  - Delete categories (only if not in use)
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
-### Receipt Uploads:
+### Build
 
-- Supported formats: JPG, PNG, PDF
-- Max file size: 5MB (customizable)
-- Users can view/download receipts attached to any expense
-- Uploads are optional and securely linked to individual expenses
+To build all apps and packages, run the following command:
 
-### Recurring Expenses:
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
 
-- Users can select “Recurring” as the expense type when creating or editing an expense
-- Recurring expenses have:
-  - **Start Date** (required)
-  - **End Date** (optional)
-- Recurrence logic:
-  - Recurring expenses are **virtualized** monthly in reports — no duplicate entries are created
-  - If the current month falls between the start and end dates, the expense is included in that month’s total
-- Users can convert an expense from `one-time` to `recurring`, and vice versa
+```sh
+cd my-turborepo
+turbo build
+```
 
-### Income Tracking:
+Without global `turbo`, use your package manager:
 
-- Users can **add**, **edit**, **delete**, and **list** income entries
-- Each income includes:
-  - Amount
-  - Date
-  - Source
-  - Description (optional)
-  - Creation Date (auto-generated)
-- Income is shown in the monthly summaries and budget calculations
+```sh
+cd my-turborepo
+npx turbo build
+pnpm dlx turbo build
+pnpm exec turbo build
+```
 
-### Dashboard & Monthly Summary:
+You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
 
-- Displays stats for the current or selected month:
-  - Total **income**
-  - Total **expenses** (including all recurring expenses active in that month)
-  - Remaining **balance** (Income − Expenses)
-- Visualizations:
-  - Pie chart for expense categories
-  - Bar chart for monthly spending over time
-- Filters:
-  - By custom date range
-  - By category or expense type
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
 
-### Budget Monitoring & Alerts:
+```sh
+turbo build --filter=docs
+```
 
-- If monthly **expenses exceed income**, show a **warning message**:
-  - "You’ve exceeded your budget for this month by $X"
-  - Visible in dashboard header or via toast
-- Triggered only when:
-  - Sum of active expenses (including recurring within date range) > sum of incomes
+Without global `turbo`:
 
-### User Profile & Settings: (Optional)
+```sh
+npx turbo build --filter=docs
+pnpm exec turbo build --filter=docs
+pnpm exec turbo build --filter=docs
+```
 
-- View account info (email, creation date)
-- Change password
-- Enable dark mode toggle
+### Develop
 
-### Access Control & Security
+To develop all apps and packages, run the following command:
 
-- All data is **user-scoped** (no cross-user access)
-- Auth tokens required for API access
-- Uploaded files are securely stored
-- Input validation and error handling for all user actions
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+
+```sh
+cd my-turborepo
+turbo dev
+```
+
+Without global `turbo`, use your package manager:
+
+```sh
+cd my-turborepo
+npx turbo dev
+pnpm exec turbo dev
+pnpm exec turbo dev
+```
+
+You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+
+```sh
+turbo dev --filter=web
+```
+
+Without global `turbo`:
+
+```sh
+npx turbo dev --filter=web
+pnpm exec turbo dev --filter=web
+pnpm exec turbo dev --filter=web
+```
+
+### Remote Caching
+
+> [!TIP]
+> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+
+Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+
+```sh
+cd my-turborepo
+turbo login
+```
+
+Without global `turbo`, use your package manager:
+
+```sh
+cd my-turborepo
+npx turbo login
+pnpm exec turbo login
+pnpm exec turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+
+```sh
+turbo link
+```
+
+Without global `turbo`:
+
+```sh
+npx turbo link
+pnpm exec turbo link
+pnpm exec turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
+- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
