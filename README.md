@@ -25,7 +25,7 @@
 > [!IMPORTANT]
 > EventSync was built as a production-focused learning project for mastering real-time systems, distributed event handling, and resilient backend architecture. Contributions and feedback are welcome.
 
->[!NOTE]
+> [!NOTE]
 > This project is intentionally over-engineered for learning purposes.
 > Feedback, ideas, and contributions are welcome.
 
@@ -34,6 +34,7 @@
 **Miditra sy Mivoaka** is a full-stack real-time web application for tracking income and expenses.
 
 Unlike traditional trackers, it is designed around **event-driven architecture**, enabling:
+
 - instant updates across clients
 - guaranteed event ordering
 - resilient and scalable data flow
