@@ -8,7 +8,12 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   API_VERSION: z.string().default('v1'),
 
-  LOG_LEVEL: z.enum(["error", "warn", "info", "http", "debug"]).default("info"),
+  CORS_ORIGINS: z
+    .string()
+    .default('http://localhost:5173')
+    .transform((val) => val.split(',')),
+
+  LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
 });
 
 const parsed = envSchema.safeParse(process.env);
