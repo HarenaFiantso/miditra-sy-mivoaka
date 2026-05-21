@@ -1,38 +1,20 @@
 {
-  "name": "expense-tracker-monorepo",
-  "description": "A full-stack web application that enables users to track personal expenses and income, upload receipts, set up recurring expenses with a defined duration, and receive alerts when they exceed their monthly budget",
+  "name": "miditra-sy-mivoaka",
   "private": true,
-  "author": {
-    "name": "Harena Fiantso",
-    "email": "harenafiantso@gmail.com"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint",
-      "prettier --check"
-    ],
-    "*.{json,yml,yaml,md}": [
-      "prettier --check"
-    ]
-  },
   "scripts": {
-    "dev": "concurrently \"npm:dev:client\" \"npm:dev:server\"",
-    "dev:client": "npm run dev --workspace=@expense-tracker/client",
-    "dev:server": "npm run dev --workspace=@expense-tracker/api",
-    "build": "npm run build --workspace=@expense-tracker/client",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.5",
-    "prettier": "^3.6.2",
-    "typescript": "~5.8.3"
+    "prettier": "^3.7.4",
+    "turbo": "^2.9.14",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
   }
 }
